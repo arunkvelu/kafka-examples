@@ -5,19 +5,23 @@ import sys
 import signal
 from confluent_kafka import Consumer
 
-if len(sys.argv) != 4:
+if len(sys.argv) != 6:
     print("Usage: {} <bootstrap.servers> <topic>\n".format(sys.argv[0]))
     sys.exit(1)
 
 bootstrap_servers = sys.argv[1]
 topic = sys.argv[2]
 consumer_group_id = sys.argv[3]
+keytab_path = sys.srgv[4]
+principal = sys.srgv[5]
 
 # Creates consumer instance. The minimum configuration requirements are 'bootstrap.servers' and 'group.id'.
 consumer = Consumer({
 'bootstrap.servers': bootstrap_servers,
 'group.id': consumer_group_id,
-'auto.offset.reset':'earliest'
+'security.protocol': 'SASL_PLAINTEXT',
+'sasl.kerberos.keytab': keytab_path,
+'sasl.kerberos.principal': principal
 })
 
 # Script below captures Ctrl+C, closes the consumer(to avoid resource leak) and stops the script
